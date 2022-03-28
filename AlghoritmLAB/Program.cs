@@ -295,7 +295,10 @@ namespace AlgorithmsLAB1
                 Console.WriteLine($"\nRunTime(in Milliseconds):{ts.TotalMilliseconds}");
             }
         }
-        public static void SortArray() { }
+        public static void SortArray() {
+            if (true) { 
+            }
+        }
         public static void BinarySearch(int[] array)
         {
             Stopwatch stopWatch = new Stopwatch();

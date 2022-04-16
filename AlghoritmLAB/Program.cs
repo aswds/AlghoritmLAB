@@ -36,7 +36,7 @@ namespace AlgorithmsLAB1
 
             for (int i = 0; i < array.Length; i++)
             {
-                array[i] = rndNumber.Next(-10, 10);
+                array[i] = rndNumber.Next(-1000, 1000);
                 Console.Write($"{array[i]}\t");
             }
             Console.WriteLine();
@@ -47,33 +47,25 @@ namespace AlgorithmsLAB1
             public int data;
             public Node next;
 
-            // Constructor to create a new node
-            public Node(int d)
+            public Node(int D)
             {
-                data = d;
+                data = D;
                 next = null;
             }
-        }
-
-        class BinarySearch
-        {
-            // function to insert a node at the beginning
-            // of the Singaly Linked List
-            public static Node Push(Node head, int data)
+            public static  Node AddFront(Node head, int data)
             {
                 Node newNode = new Node(data);
                 newNode.next = head;
                 head = newNode;
+
                 return head;
             }
-
-            // Function to find middle element
-            // using Fast and Slow pointers
-           public  static Node MiddleNode(Node start, Node last)
+            public  static Node MiddleNode(Node start, Node last)
             {
                 if (start == null)
+                {
                     return null;
-
+                }
                 Node slow = start;
                 Node fast = start.next;
 
@@ -88,9 +80,6 @@ namespace AlgorithmsLAB1
                 }
                 return slow;
             }
-
-            // function to insert a node at the beginning
-            // of the Singly Linked List
             public static Node BinarySearchMethod(Node head, int value)
             {
                 Node start = head;
@@ -98,39 +87,42 @@ namespace AlgorithmsLAB1
 
                 do
                 {
-                    // Find Middle
                     Node mid = MiddleNode(start, last);
 
-                    // If middle is empty
                     if (mid == null)
+                    {
                         return null;
+                    }
 
-                    // If value is present at middle
                     if (mid.data == value)
+                    {
                         return mid;
+                    }
 
-                    // If value is less than mid
                     else if (mid.data > value)
                     {
                         start = mid.next;
                     }
 
-                    // If the value is more than mid.
                     else
+                    {
                         last = mid;
+                    }
+
                 } while (last == null || last != start);
 
-                // value not present
                 return null;
             }
         }
 
+        
+      
             static void Main(string[] args)
         {
             int[] array = ArrayCreator();
             while (true)
             {
-                Console.Write("Chose alghorith to find your element: \n 1.Linear Search \n 2.Search with barier \n 3.Binary search \n 4.\n 5.Create new array\n\nEnter your choise:");
+                Console.Write("\nChose alghorith to find your element: \n 1.Linear Search \n 2.Search with barier \n 3.Binary search \n 4.Golden Ratio\n 5.Create new array\n\nEnter your choise:");
                 int choise = Convert.ToInt32(Console.ReadLine());
                 switch (choise)
                 {
@@ -149,10 +141,21 @@ namespace AlgorithmsLAB1
                             BinaryMethodSearch(array);
                             break;
                         }
+                    case 4:
+                        {
+                            GolderRatio(array);
+                            break;
+                        }
                     case 5:
                         {
                             Console.Clear();
                             array = ArrayCreator();
+                            break;
+                        }
+                    default:
+                        {
+                            Console.Clear();
+                            OutputArray(array);
                             break;
                         }
 
@@ -428,36 +431,41 @@ namespace AlgorithmsLAB1
                         }
                 }
             }
-
+            
             void BinaryRecursiveSearch(int[]array, int key)
             {
+                stopWatch.Reset();
+                stopWatch.Start();
                 int arrayLength = array.Length;
                 int min = 0, max = arrayLength-1;
                 while (min <= max)
                 {
                     // int arrayMid = arrayLength % 2 == 0 ? arrayLength / 2 : arrayLength + 1 / 2;
                     int arrayMid = (min + max) / 2;
-                    Console.WriteLine($"Mid:{arrayMid}");
                     
                     if (key == array[arrayMid] )
                     {
+                        stopWatch.Stop();
                         OutputResult(true);
+                        TimeSpan ts = stopWatch.Elapsed;
+                        Console.WriteLine($"\nRunTime(in Milliseconds):{ts.TotalMilliseconds}");
                         break;
                     }
                     else if (key < array[arrayMid])
                     {
                         max = arrayMid - 1;
 
-                        Console.WriteLine($"Max:{max}");
 
                     }
                     else 
                     {
                         min = arrayMid + 1;
-                        Console.WriteLine($"Min:{min}");
                     }
 
                 }
+                stopWatch.Stop();
+                TimeSpan tms = stopWatch.Elapsed;
+                Console.WriteLine($"\nRunTime(in Milliseconds):{tms.TotalMilliseconds}");
                 OutputResult(false);
 
             }
@@ -468,15 +476,18 @@ namespace AlgorithmsLAB1
                 Node head = null;
                 for (int i = 0; i<array.Length; i++)
                 {
-                    head = BinarySearch.Push(head, array[i]);
+                    head = Node.AddFront(head, array[i]);
                 }
-                if(BinarySearch.BinarySearchMethod(head, searchedElement) == null)
+                if(Node.BinarySearchMethod(head, searchedElement) == null)
                 {
                     OutputResult(false);
                 }else
                 {
+                    stopWatch.Stop();
                     OutputResult(true);
                 }
+                TimeSpan ts = stopWatch.Elapsed;
+                Console.WriteLine($"\nRunTime(in Milliseconds):{ts.TotalMilliseconds}");
             }
             void ArraySearch(int[] array)
             {
@@ -488,6 +499,97 @@ namespace AlgorithmsLAB1
 
                 TimeSpan ts = stopWatch.Elapsed;
                 Console.WriteLine($"\nRunTime(in Milliseconds):{ts.TotalMilliseconds}");
+            }
+        }
+        public static void GolderRatio (int[] array)
+        {
+            Array.Sort(array);
+            Stopwatch stopWatch = new Stopwatch();
+            int searchedElement, choise;
+            bool run = true;
+            Array.Sort(array);
+            while (run)
+            {
+
+                Console.Clear();
+
+                Console.WriteLine("Binary Search with Golden Ratio\n\n");
+                Console.WriteLine("Sorted Array:");
+                OutputArray(array);
+                Console.Write("\n\nWhat element you want to find:");
+
+                if (Int32.TryParse(Console.ReadLine(), out searchedElement))
+                {
+                    Console.WriteLine($"Your element:{searchedElement}");
+                }
+                else
+                {
+                    Console.WriteLine("Sorry, but you entered wrong type of data:(");
+                    run = false;
+                }
+
+                Console.Write("\n1.Array\n2.Linear linked list\n3.Exit\n");
+                choise = Convert.ToInt32(Console.ReadLine());
+
+                switch (choise)
+                {
+                    case 1:
+                        {
+                            ArraySearch(array);
+                            Console.ReadKey();
+                            break;
+                        }
+                    case 2:
+                        {
+                            LinkedListSearch(array);
+                            Console.ReadKey();
+                            break;
+                        }
+                    case 3:
+                        {
+                            run = false;
+                            Console.Clear();
+                            break;
+                        }
+                }
+            }
+            void ArraySearch(int[] array)
+            {
+                stopWatch.Reset();
+                stopWatch.Start();
+                int left = 0;
+                int right = array.Length - 1;
+                bool isFound = false;
+                while ((left <= right) && (isFound == false))
+                {
+                    int ratio = (int)(left + 0.618 * (right - left   ));
+                    if (array[ratio] == searchedElement)
+                    {
+                        stopWatch.Stop();
+                        isFound = true;
+                        break;
+                    }
+                    else if (array[ratio] < searchedElement)
+                    {
+                        left = ratio + 1;
+                    }
+                    else if (ratio == array.Length  )
+                    {
+                        stopWatch.Stop();
+                        isFound = false;
+                    }
+                    else
+                    {
+                        right = ratio - 1;
+                    }
+                }
+                OutputResult(isFound);
+                TimeSpan ts = stopWatch.Elapsed;
+                Console.WriteLine($"\nRunTime(in Milliseconds):{ts.TotalMilliseconds}");
+                Console.ReadKey();
+            }
+            void LinkedListSearch(int[] array)
+            {
             }
         }
     }

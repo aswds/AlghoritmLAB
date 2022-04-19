@@ -60,7 +60,7 @@ namespace AlgorithmsLAB1
 
                 return head;
             }
-            public  static Node MiddleNode(Node start, Node last)
+            public static Node MiddleNode(Node start, Node last, bool isGoldenRatio)
             {
                 if (start == null)
                 {
@@ -68,10 +68,21 @@ namespace AlgorithmsLAB1
                 }
                 Node slow = start;
                 Node fast = start.next;
-
+                
                 while (fast != last)
                 {
-                    fast = fast.next;
+                    if (isGoldenRatio)
+                    {
+                        for (int i = 0; i < 6; i++)
+                        {
+                            if(fast != last)
+                                fast = fast.next;
+                        }
+                    }
+                    else
+                    {
+                        fast = fast.next;
+                    }
                     if (fast != last)
                     {
                         slow = slow.next;
@@ -80,26 +91,26 @@ namespace AlgorithmsLAB1
                 }
                 return slow;
             }
-            public static Node BinarySearchMethod(Node head, int value)
+           
+            public static Node BinarySearchMethod(Node head, int key, bool isGoldenRatio)
             {
                 Node start = head;
                 Node last = null;
-
                 do
                 {
-                    Node mid = MiddleNode(start, last);
+                    Node mid =  MiddleNode(start, last, isGoldenRatio);
 
                     if (mid == null)
                     {
                         return null;
                     }
 
-                    if (mid.data == value)
+                    if (mid.data == key)
                     {
                         return mid;
                     }
 
-                    else if (mid.data > value)
+                    else if (mid.data > key)
                     {
                         start = mid.next;
                     }
@@ -474,11 +485,12 @@ namespace AlgorithmsLAB1
                 stopWatch.Reset();
                 stopWatch.Start();
                 Node head = null;
+                bool isGoldenRatio = false;
                 for (int i = 0; i<array.Length; i++)
                 {
                     head = Node.AddFront(head, array[i]);
                 }
-                if(Node.BinarySearchMethod(head, searchedElement) == null)
+                if(Node.BinarySearchMethod(head, searchedElement, isGoldenRatio) == null)
                 {
                     OutputResult(false);
                 }else
@@ -507,6 +519,7 @@ namespace AlgorithmsLAB1
             Stopwatch stopWatch = new Stopwatch();
             int searchedElement, choise;
             bool run = true;
+            bool isGoldenRatio = true;
             Array.Sort(array);
             while (run)
             {
@@ -590,6 +603,24 @@ namespace AlgorithmsLAB1
             }
             void LinkedListSearch(int[] array)
             {
+                stopWatch.Reset();
+                stopWatch.Start();
+                Node head = null;
+                for (int i = 0; i < array.Length; i++)
+                {
+                    head = Node.AddFront(head, array[i]);
+                }
+                if (Node.BinarySearchMethod(head, searchedElement, isGoldenRatio) == null)
+                {
+                    OutputResult(false);
+                }
+                else
+                {
+                    stopWatch.Stop();
+                    OutputResult(true);
+                }
+                TimeSpan ts = stopWatch.Elapsed;
+                Console.WriteLine($"\nRunTime(in Milliseconds):{ts.TotalMilliseconds}");
             }
         }
     }
